@@ -8,20 +8,24 @@
 
 /* Begin PBXBuildFile section */
 		663C4301204605910086DE21 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4300204605910086DE21 /* AppDelegate.swift */; };
-		663C4303204605910086DE21 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4302204605910086DE21 /* ViewController.swift */; };
-		663C4306204605910086DE21 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 663C4304204605910086DE21 /* Main.storyboard */; };
+		663C4303204605910086DE21 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4302204605910086DE21 /* GameViewController.swift */; };
 		663C4308204605910086DE21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 663C4307204605910086DE21 /* Assets.xcassets */; };
-		663C430B204605910086DE21 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 663C4309204605910086DE21 /* LaunchScreen.storyboard */; };
+		663C4313204606FB0086DE21 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4312204606FB0086DE21 /* GameModel.swift */; };
+		663C43152046076F0086DE21 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C43142046076F0086DE21 /* GameView.swift */; };
+		663C4317204609910086DE21 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 663C4316204609910086DE21 /* Default-568h@2x.png */; };
+		663C433920475FBE0086DE21 /* dict.txt in Resources */ = {isa = PBXBuildFile; fileRef = 663C433820475FBE0086DE21 /* dict.txt */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		663C42FD204605910086DE21 /* WordGame.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WordGame.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		663C4300204605910086DE21 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		663C4302204605910086DE21 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		663C4305204605910086DE21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		663C4302204605910086DE21 /* GameViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameViewController.swift; sourceTree = "<group>"; };
 		663C4307204605910086DE21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		663C430A204605910086DE21 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		663C430C204605910086DE21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		663C4312204606FB0086DE21 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
+		663C43142046076F0086DE21 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
+		663C4316204609910086DE21 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
+		663C433820475FBE0086DE21 /* dict.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dict.txt; path = ../../../../../Downloads/dict.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -38,6 +42,7 @@
 		663C42F4204605900086DE21 = {
 			isa = PBXGroup;
 			children = (
+				663C4316204609910086DE21 /* Default-568h@2x.png */,
 				663C42FF204605910086DE21 /* WordGame */,
 				663C42FE204605910086DE21 /* Products */,
 			);
@@ -54,11 +59,12 @@
 		663C42FF204605910086DE21 /* WordGame */ = {
 			isa = PBXGroup;
 			children = (
+				663C433820475FBE0086DE21 /* dict.txt */,
+				663C43142046076F0086DE21 /* GameView.swift */,
+				663C4312204606FB0086DE21 /* GameModel.swift */,
 				663C4300204605910086DE21 /* AppDelegate.swift */,
-				663C4302204605910086DE21 /* ViewController.swift */,
-				663C4304204605910086DE21 /* Main.storyboard */,
+				663C4302204605910086DE21 /* GameViewController.swift */,
 				663C4307204605910086DE21 /* Assets.xcassets */,
-				663C4309204605910086DE21 /* LaunchScreen.storyboard */,
 				663C430C204605910086DE21 /* Info.plist */,
 			);
 			path = WordGame;
@@ -123,9 +129,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				663C430B204605910086DE21 /* LaunchScreen.storyboard in Resources */,
 				663C4308204605910086DE21 /* Assets.xcassets in Resources */,
-				663C4306204605910086DE21 /* Main.storyboard in Resources */,
+				663C4317204609910086DE21 /* Default-568h@2x.png in Resources */,
+				663C433920475FBE0086DE21 /* dict.txt in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -136,31 +142,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				663C4303204605910086DE21 /* ViewController.swift in Sources */,
+				663C4303204605910086DE21 /* GameViewController.swift in Sources */,
+				663C4313204606FB0086DE21 /* GameModel.swift in Sources */,
+				663C43152046076F0086DE21 /* GameView.swift in Sources */,
 				663C4301204605910086DE21 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXVariantGroup section */
-		663C4304204605910086DE21 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				663C4305204605910086DE21 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
-		663C4309204605910086DE21 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				663C430A204605910086DE21 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
 		663C430D204605910086DE21 /* Debug */ = {
