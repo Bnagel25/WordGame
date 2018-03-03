@@ -11,7 +11,6 @@
 		663C4303204605910086DE21 /* GameViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4302204605910086DE21 /* GameViewController.swift */; };
 		663C4308204605910086DE21 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 663C4307204605910086DE21 /* Assets.xcassets */; };
 		663C4313204606FB0086DE21 /* GameModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C4312204606FB0086DE21 /* GameModel.swift */; };
-		663C43152046076F0086DE21 /* GameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 663C43142046076F0086DE21 /* GameView.swift */; };
 		663C4317204609910086DE21 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 663C4316204609910086DE21 /* Default-568h@2x.png */; };
 		663C433920475FBE0086DE21 /* dict.txt in Resources */ = {isa = PBXBuildFile; fileRef = 663C433820475FBE0086DE21 /* dict.txt */; };
 /* End PBXBuildFile section */
@@ -23,7 +22,6 @@
 		663C4307204605910086DE21 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		663C430C204605910086DE21 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		663C4312204606FB0086DE21 /* GameModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameModel.swift; sourceTree = "<group>"; };
-		663C43142046076F0086DE21 /* GameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameView.swift; sourceTree = "<group>"; };
 		663C4316204609910086DE21 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		663C433820475FBE0086DE21 /* dict.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dict.txt; path = ../../../../../Downloads/dict.txt; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -60,7 +58,6 @@
 			isa = PBXGroup;
 			children = (
 				663C433820475FBE0086DE21 /* dict.txt */,
-				663C43142046076F0086DE21 /* GameView.swift */,
 				663C4312204606FB0086DE21 /* GameModel.swift */,
 				663C4300204605910086DE21 /* AppDelegate.swift */,
 				663C4302204605910086DE21 /* GameViewController.swift */,
@@ -144,7 +141,6 @@
 			files = (
 				663C4303204605910086DE21 /* GameViewController.swift in Sources */,
 				663C4313204606FB0086DE21 /* GameModel.swift in Sources */,
-				663C43152046076F0086DE21 /* GameView.swift in Sources */,
 				663C4301204605910086DE21 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

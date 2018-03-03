@@ -8,31 +8,50 @@
 
 import UIKit
 
-class GameViewController: UICollectionViewController, UICollectionViewDelegateFlowLayout {
+protocol SwipeDelegate {
+    func determineSwipePosition(sender: UIView, location: CGPoint)
+    func swipeEnded(sender: UIView)
+}
+
+class GameViewController: UICollectionViewController,
+UICollectionViewDelegateFlowLayout, SwipeDelegate {
     
-    var gameView: GameView = GameView()
+
     private var lineStart: CGPoint = CGPoint(x: 0, y: 0)
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // self.view = gameView
-        collectionView?.backgroundView = gameView
+        let layout = UICollectionViewFlowLayout()
+        
+        let highlightView = HighlightCollectionView(frame: view.frame, collectionViewLayout: layout)
+        
+        highlightView.swipeDelegate = self
+        collectionView = highlightView
         collectionView?.allowsMultipleSelection = true
         collectionView?.register(LetterCell.self, forCellWithReuseIdentifier: "letterCell")
-        /*
-        gameView.setScore(200)
-        gameView.appendToLettersDict(char: Letters.A.rawValue, x: 5, y: 5)
-        gameView.appendToLettersDict(char: Letters.B.rawValue, x: 1, y: 1)
-        gameView.appendToLettersDict(char: Letters.E.rawValue, x: 2, y: 1)
-        gameView.appendToLettersDict(char: Letters.N.rawValue, x: 3, y: 1)
-        gameView.appendToLettersDict(char: Letters.R.rawValue, x: 4, y: 1)
-        gameView.appendToLettersDict(char: Letters.U.rawValue, x: 5, y: 1)
-        gameView.appendToLettersDict(char: Letters.L.rawValue, x: 6, y: 1)
-        gameView.appendToLettersDict(char: Letters.E.rawValue, x: 7, y: 1)
-        gameView.appendToLettersDict(char: Letters.S.rawValue, x: 8, y: 1)
-         */
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(newGame))
-        
+    }
+    
+    func determineSwipePosition(sender: UIView, location: CGPoint) {
+        /* Each block is about 35px away on Iphone 8, which is roughly
+         its height(568) / 16.0 and its width(320) / 9 */
+        let row: Int = Int(location.y) / Int(view.frame.height / 16)
+        let col: Int = Int(location.x) / Int(view.frame.width / 9)
+        if (row < 12 && col < 9) {
+            let index = row * 9 + col
+            let indexP = IndexPath(row: index, section: 0)
+            let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
+            print(letterCell.letterLabel.text!)
+            letterCell.letterLabel.textColor = UIColor.orange
+        }
+    }
+    
+    func swipeEnded(sender: UIView) {
+        // Check Word accuracy, delete and then reset
+        for i in 0...107 {
+            let indexP = IndexPath(row: i, section: 0)
+            let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
+            letterCell.letterLabel.textColor = UIColor.black
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView,
@@ -45,37 +64,15 @@ class GameViewController: UICollectionViewController, UICollectionViewDelegateFl
                                  sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width / 13.5 , height: view.frame.height / 22.0)
     }
-    
-    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row) // What item it is
-        let index = indexPath.row
-        let column = index % 9
-        let row = (index - column) / 9
-        let cell = collectionView.cellForItem(at: indexPath)
-        if cell?.isSelected == true{
-            
-            if(gameView.startIsSet()) {
-                gameView.appendtoLines(row: row, col: column)
-            }
-            else {
-                gameView.setLineStart(row: row, col: column)
-            }
-            gameView.setNeedsDisplay()
-        }
-        else {
-            cell?.backgroundColor = UIColor.clear
-        }
-    }
-    
 
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let letterCell = collectionView.dequeueReusableCell(withReuseIdentifier: "letterCell", for: indexPath) as! LetterCell
-        
+        letterCell.column = indexPath.row % 9
+        letterCell.row = (indexPath.row - letterCell.column!) / 9
         letterCell.letterLabel.text = GameModel.get(at: indexPath.row).rawValue
         return letterCell
     }
-    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -83,17 +80,101 @@ class GameViewController: UICollectionViewController, UICollectionViewDelegateFl
     }
     
     @objc func newGame() {
-        //GameModel.buildBoard()
-        GameModel.checkWordsSelected()
-        //collectionView?.reloadData()
+        GameModel.buildBoard()
+        //GameModel.checkWordsSelected()
+        collectionView?.reloadData()
     }
 
 }
 
+class HighlightCollectionView: UICollectionView {
+    
+    var swipeDelegate: SwipeDelegate?
+    var lineStart: CGPoint?
+    var lines: [CGPoint] = []
+    private var score = "0"
+    
+    override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
+        super.init(frame: frame, collectionViewLayout: layout)
+        self.backgroundColor = UIColor.white
+    }
+    
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        let touch: UITouch = touches.first!
+        lineStart = touch.location(in: self)
+        swipeDelegate?.determineSwipePosition(sender: self, location: lineStart!)
+    }
+    
+    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        let touch: UITouch = touches.first!
+        let touchPoint = touch.location(in: self)
+        lines.append(touchPoint)
+        self.setNeedsDisplay()
+        swipeDelegate?.determineSwipePosition(sender: self, location: touchPoint)
+    }
+    
+    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        lines = []
+        self.setNeedsDisplay()
+        swipeDelegate?.swipeEnded(sender: self)
+    }
+    
+    override func draw(_ rect: CGRect) {
+        super.draw(rect)
+        let context = UIGraphicsGetCurrentContext()!
+        
+        for i in 0...10 {
+            let num: CGFloat = CGFloat(i);
+            context.move(to: CGPoint(x: num * bounds.width / 9.0, y: 0.0))
+            context.addLine(to: CGPoint(x: num * bounds.width / 9.0, y: 12 * bounds.height / 16.0))
+            context.strokePath()
+        }
+        
+        for i in 0...12 {
+            let num: CGFloat = CGFloat(i);
+            context.move(to: CGPoint(x: 0.0, y: num * bounds.height / 16.0))
+            context.addLine(to: CGPoint(x: bounds.width, y: num * bounds.height / 16.0))
+            context.strokePath()
+        }
+        
+        let lowerBounds = 14 * bounds.height / 16.0
+        let scoreString: NSString = NSString(string: "Score:")
+        scoreString.draw(at: CGPoint(x: bounds.width / 10.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
+        score.draw(at: CGPoint(x: bounds.width / 3.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
+        context.strokePath()
+        
+        
+        if let point = lineStart {
+            context.move(to: point)
+            context.setStrokeColor(UIColor.yellow.cgColor)
+            context.setLineWidth(10)
+            
+            for i in lines {
+                context.addLine(to: i)
+                context.strokePath()
+                context.move(to: i)
+            }
+        }
+        
+    }
+}
+
+
 class LetterCell: UICollectionViewCell {
     
+    var row: Int?
+    var column: Int?
+    var touchStart: CGPoint?
     override init(frame: CGRect) {
         super.init(frame: frame)
+        self.isUserInteractionEnabled = true
         setupViews()
     }
     
@@ -105,7 +186,7 @@ class LetterCell: UICollectionViewCell {
         let letterLabel = UILabel()
         letterLabel.text = "A"
         letterLabel.font = letterLabel.font.withSize(18)
-        letterLabel.highlightedTextColor = UIColor.blue
+        //letterLabel.highlightedTextColor = UIColor.blue
         letterLabel.textColor = UIColor.black
         letterLabel.adjustsFontSizeToFitWidth = true;
         letterLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -119,26 +200,6 @@ class LetterCell: UICollectionViewCell {
         addConstraints(NSLayoutConstraint.constraints(withVisualFormat: "V:|-5-[v0]-5-|", options: NSLayoutFormatOptions(), metrics: nil, views: ["v0": letterLabel]))
         
     }
-    /*
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        
-        let touch: UITouch = touches.first!
-        let _: CGPoint = touch.location(in: self)
-        letterLabel.textColor = UIColor.blue
-        //GameModel.insertSelected(letter: letterLabel.text!)
-        return
-    }
-    
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //GameModel.insertSelected(letter: letterLabel.text!)
-    }
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        //GameModel.checkWordsSelected()
-        return
-    }
- */
  
 }
 

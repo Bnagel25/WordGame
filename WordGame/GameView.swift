@@ -16,6 +16,7 @@ class GameView: UIView {
     private var context: CGContext?
     private var lineStart: CGPoint?
     private var lines: [CGPoint] = []
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = UIColor.white
@@ -45,6 +46,7 @@ class GameView: UIView {
         let line = CGPoint(x: CGFloat(col + 1) * bounds.width / 9.0 - bounds.width / 18.0, y: CGFloat(row + 1) * bounds.height / 16.0 + bounds.height / 19.0 + bounds.height / 32.0)
         lines.append(line)
     }
+
     
     override func draw(_ rect: CGRect) {
         super.draw(rect)
@@ -67,12 +69,16 @@ class GameView: UIView {
             context!.strokePath()
         }
         
+        
+        
         // Draw Score and Score String
+        
         let lowerBounds = 12 * bounds.height / 12.0
         let scoreString: NSString = NSString(string: "Score:")
         scoreString.draw(at: CGPoint(x: bounds.width / 10.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
         score.draw(at: CGPoint(x: bounds.width / 3.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
         context?.strokePath()
+ 
         
         // Draw Line
         //let lineEnd: CGPoint = CGPoint(x: CGFloat(5 + 1) * bounds.width / 9.0 - bounds.width / 18.0, y: CGFloat(5 + 1) * bounds.height / 16.0 + bounds.height / 19.0 + bounds.height / 32.0)

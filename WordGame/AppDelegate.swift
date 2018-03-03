@@ -32,7 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let layout = UICollectionViewFlowLayout()
         let gameViewController = GameViewController(collectionViewLayout: layout)
         let controller = UINavigationController(rootViewController: gameViewController)
-        
         window?.rootViewController = controller
         
         window?.makeKeyAndVisible()
