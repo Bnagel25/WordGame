@@ -23,6 +23,7 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
     var validDelegate: ValidWordDelegate?
     private var lineStart: CGPoint = CGPoint(x: 0, y: 0)
     private var word: [String]  = []
+    private var wordCells: [LetterCell] = []
     private var lastWordAdded: String = ""
     
     override func viewDidLoad() {
@@ -51,15 +52,16 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
             if(letterCell.charPreviouslyAdded == false && self.lastWordAdded != letterCell.letterLabel.text!) {
                 letterCell.letterLabel.textColor = UIColor.orange
                 self.word.append(letterCell.letterLabel.text!)
+                wordCells.append(letterCell)
                 letterCell.charPreviouslyAdded = true
                 self.lastWordAdded = letterCell.letterLabel.text!
-                //print(self.lastWordAdded)
             }
         
             else if (self.lastWordAdded != letterCell.letterLabel.text!) {
                 letterCell.charPreviouslyAdded = false
                 letterCell.letterLabel.textColor = UIColor.black
                 self.word.popLast()
+                self.wordCells.popLast()
                 if (self.word.count > 0) {
                     self.lastWordAdded = self.word[self.word.count - 1]
                 }
@@ -84,6 +86,10 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         let str: String = self.word.joined()
         if (GameModel.checkValidWord(str)) {
             self.validDelegate?.validWord(true)
+            for i in wordCells {
+                GameModel.removeLetter(row: i.row!, column: i.column!)
+                //i.letterLabel.text = "_"
+            }
         }
         else {
             self.validDelegate?.validWord(false)
@@ -91,6 +97,7 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         
         print(self.word)
         self.word = []
+        self.wordCells = []
         for i in 0...107 {
             let indexP = IndexPath(row: i, section: 0)
             let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
@@ -98,6 +105,7 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
             letterCell.charPreviouslyAdded = false
             self.lastWordAdded = ""
         }
+        collectionView?.reloadData()
     }
     
     override func collectionView(_ collectionView: UICollectionView,

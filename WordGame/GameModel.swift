@@ -9,7 +9,8 @@
 import Foundation
 
 enum Letters: String {
-    case Blank = ""
+    case Blank = "_"
+    case Clear = ""
     case A = "A"
     case B = "B"
     case C = "C"
@@ -73,6 +74,18 @@ class GameModel {
         }
     }
     
+    static func removeLetter(row: Int, column: Int) {
+        var currentRow: Int = row
+        var currentIndex = row * 9 + column
+        self.board[currentIndex] = Letters.Clear
+        while(currentRow > 0) {
+            currentIndex = row * 9 + column
+            self.board[currentIndex] = self.board[currentIndex - 9]
+            currentRow -= 1
+        }
+        self.board[column] = Letters.Clear
+    }
+    
     static func getWordsFromDictFile() {
         //TODO: ADD RELATIVE PATH
         let path = "/Users/bennagel/Documents/S18/cs4530/WordGame/WordGame/dict.txt"
@@ -98,7 +111,12 @@ class GameModel {
     
     static func checkValidWord(_ word: String) -> Bool {
         let lowerCaseWord = word.lowercased()
-        return wordsInDict.contains(lowerCaseWord)
+        for i in wordsInDict {
+            if (i == lowerCaseWord) {
+                return true
+            }
+        }
+        return false
     }
     
     static func randomLetter() -> Letters {
