@@ -13,17 +13,24 @@ protocol SwipeDelegate {
     func swipeEnded(sender: UIView)
 }
 
+protocol ValidWordDelegate {
+    func validWord(_ isTrue: Bool)
+}
+
 class GameViewController: UICollectionViewController,
 UICollectionViewDelegateFlowLayout, SwipeDelegate {
     
-
+    var validDelegate: ValidWordDelegate?
     private var lineStart: CGPoint = CGPoint(x: 0, y: 0)
+    private var word: [String]  = []
+    private var lastWordAdded: String = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let layout = UICollectionViewFlowLayout()
         
         let highlightView = HighlightCollectionView(frame: view.frame, collectionViewLayout: layout)
-        
+        validDelegate = highlightView
         highlightView.swipeDelegate = self
         collectionView = highlightView
         collectionView?.allowsMultipleSelection = true
@@ -40,17 +47,56 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
             let index = row * 9 + col
             let indexP = IndexPath(row: index, section: 0)
             let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
-            print(letterCell.letterLabel.text!)
-            letterCell.letterLabel.textColor = UIColor.orange
+            // Removes Duplicates
+            if(letterCell.charPreviouslyAdded == false && self.lastWordAdded != letterCell.letterLabel.text!) {
+                letterCell.letterLabel.textColor = UIColor.orange
+                self.word.append(letterCell.letterLabel.text!)
+                letterCell.charPreviouslyAdded = true
+                self.lastWordAdded = letterCell.letterLabel.text!
+                //print(self.lastWordAdded)
+            }
+        
+            else if (self.lastWordAdded != letterCell.letterLabel.text!) {
+                letterCell.charPreviouslyAdded = false
+                letterCell.letterLabel.textColor = UIColor.black
+                self.word.popLast()
+                if (self.word.count > 0) {
+                    self.lastWordAdded = self.word[self.word.count - 1]
+                }
+                else {
+                    self.word = []
+                }
+                print(self.word)
+            }
+        }
+        let str: String = self.word.joined()
+        // Have to Check word validity here
+        if(GameModel.checkValidWord(str)) {
+            self.validDelegate?.validWord(true)
+        }
+        else {
+            self.validDelegate?.validWord(false)
         }
     }
     
     func swipeEnded(sender: UIView) {
         // Check Word accuracy, delete and then reset
+        let str: String = self.word.joined()
+        if (GameModel.checkValidWord(str)) {
+            self.validDelegate?.validWord(true)
+        }
+        else {
+            self.validDelegate?.validWord(false)
+        }
+        
+        print(self.word)
+        self.word = []
         for i in 0...107 {
             let indexP = IndexPath(row: i, section: 0)
             let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
             letterCell.letterLabel.textColor = UIColor.black
+            letterCell.charPreviouslyAdded = false
+            self.lastWordAdded = ""
         }
     }
     
@@ -87,11 +133,13 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
 
 }
 
-class HighlightCollectionView: UICollectionView {
+class HighlightCollectionView: UICollectionView, ValidWordDelegate{
     
     var swipeDelegate: SwipeDelegate?
-    var lineStart: CGPoint?
-    var lines: [CGPoint] = []
+    private var lineStart: CGPoint?
+    private var lines: [CGPoint] = []
+    
+    var lineColor: CGColor = UIColor.yellow.cgColor
     private var score = "0"
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
@@ -99,9 +147,17 @@ class HighlightCollectionView: UICollectionView {
         self.backgroundColor = UIColor.white
     }
     
-    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func validWord(_ isTrue: Bool) {
+        if(isTrue) {
+            lineColor = UIColor.lightGray.cgColor
+        }
+        else {
+            lineColor = UIColor.yellow.cgColor
+        }
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -153,7 +209,7 @@ class HighlightCollectionView: UICollectionView {
         
         if let point = lineStart {
             context.move(to: point)
-            context.setStrokeColor(UIColor.yellow.cgColor)
+            context.setStrokeColor(lineColor)
             context.setLineWidth(10)
             
             for i in lines {
@@ -162,16 +218,15 @@ class HighlightCollectionView: UICollectionView {
                 context.move(to: i)
             }
         }
-        
     }
 }
-
 
 class LetterCell: UICollectionViewCell {
     
     var row: Int?
     var column: Int?
-    var touchStart: CGPoint?
+    var charPreviouslyAdded: Bool = false
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.isUserInteractionEnabled = true
@@ -186,7 +241,6 @@ class LetterCell: UICollectionViewCell {
         let letterLabel = UILabel()
         letterLabel.text = "A"
         letterLabel.font = letterLabel.font.withSize(18)
-        //letterLabel.highlightedTextColor = UIColor.blue
         letterLabel.textColor = UIColor.black
         letterLabel.adjustsFontSizeToFitWidth = true;
         letterLabel.translatesAutoresizingMaskIntoConstraints = false

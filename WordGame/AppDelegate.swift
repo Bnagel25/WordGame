@@ -16,18 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow()
-        /*
-        let controller = GameViewController()
-        let tabBarController = UITabBarController()
-        let viewControllerList = [controller]
-        
-        controller.tabBarItem = UITabBarItem(tabBarSystemItem: .featured, tag: 0)
-        
-        tabBarController.viewControllers = viewControllerList.map {
-            UINavigationController(rootViewController: $0)
-        }
-        window?.rootViewController = tabBarController
-         */
         GameModel.buildBoard()
         let layout = UICollectionViewFlowLayout()
         let gameViewController = GameViewController(collectionViewLayout: layout)

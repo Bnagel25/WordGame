@@ -47,6 +47,9 @@ class GameModel {
                                                .W, .X, .Y, .Z]
     
     private static var board: [Letters] = []
+    static var wordsOnBoard: [String] = []
+    private static var wordsInDict: [String] = []
+    private static let letterCount = 94
     
     private static var selectedLetters: [String] = []
     
@@ -63,10 +66,39 @@ class GameModel {
     }
     
     static func buildBoard() {
+        getWordsFromDictFile()
         board = []
         for _ in 0...107 {
             board.append(randomLetter())
         }
+    }
+    
+    static func getWordsFromDictFile() {
+        //TODO: ADD RELATIVE PATH
+        let path = "/Users/bennagel/Documents/S18/cs4530/WordGame/WordGame/dict.txt"
+        
+        do {
+            let contents = try? String(contentsOfFile: path, encoding: .ascii)
+            if contents != nil {
+                wordsInDict = (contents?.components(separatedBy: "\n"))!
+            }
+        }
+        /*
+        var currentLetterCount: Int = 0
+        while(currentLetterCount < letterCount) {
+            let randomIndex = Int(arc4random_uniform(UInt32(wordsInDict.count)))
+            if(currentLetterCount + wordsInDict[randomIndex].count <= letterCount &&
+                wordsInDict[randomIndex].count > 0) {
+                wordsOnBoard.append(wordsInDict[randomIndex])
+                currentLetterCount += wordsInDict[randomIndex].count
+            }
+        }
+         */
+    }
+    
+    static func checkValidWord(_ word: String) -> Bool {
+        let lowerCaseWord = word.lowercased()
+        return wordsInDict.contains(lowerCaseWord)
     }
     
     static func randomLetter() -> Letters {
