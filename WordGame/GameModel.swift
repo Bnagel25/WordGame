@@ -58,7 +58,7 @@ class GameModel {
     private static var board: [Letters] = []
     static var wordsOnBoard: [String] = []
     private static var wordsInDict: [String] = []
-    private static let letterCount = 94
+    private static let letterCount = 98
     static var score: Int = 0
     static var longestWord: String = ""
     
@@ -80,9 +80,22 @@ class GameModel {
         getWordsFromDictFile()
         score = 0
         board = []
-        for _ in 0...107 {
-            board.append(randomLetter())
+        
+        for _ in 0...9 {
+            board.append(Letters.Blank)
         }
+        
+        for word in wordsOnBoard {
+            let strWord = String(word)
+            for i in strWord.uppercased() {
+                board.append(Letters(rawValue: "\(i)")!)
+            }
+        }
+        /*
+        for i in 0...107 {
+            board.append()
+        }
+        */
     }
     
     static func removeLetter(row: Int, column: Int, isHighlighted: Bool) {
@@ -90,7 +103,9 @@ class GameModel {
         var currrentColumn: Int = 9
         var currentIndex = row * 9 + column
         let scoreLetter = self.board[currentIndex]
-        self.score += self.wordScore[scoreLetter.rawValue]!
+        if let letterScore = self.wordScore[scoreLetter.rawValue] {
+            self.score += letterScore
+        }
         self.board[currentIndex] = Letters.Clear
         self.clearBanks(row: currentRow, col: column)
         
@@ -175,17 +190,16 @@ class GameModel {
                 wordsInDict = (contents?.components(separatedBy: "\n"))!
             }
         }
-        /*
+
         var currentLetterCount: Int = 0
         while(currentLetterCount < letterCount) {
             let randomIndex = Int(arc4random_uniform(UInt32(wordsInDict.count)))
             if(currentLetterCount + wordsInDict[randomIndex].count <= letterCount &&
-                wordsInDict[randomIndex].count > 0) {
+                wordsInDict[randomIndex].count > 1) {
                 wordsOnBoard.append(wordsInDict[randomIndex])
                 currentLetterCount += wordsInDict[randomIndex].count
             }
         }
-         */
     }
     
     static func checkValidWord(_ word: String) -> Bool {
