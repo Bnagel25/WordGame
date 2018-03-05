@@ -25,12 +25,14 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
     private var word: [String]  = []
     private var wordCells: [LetterCell] = []
     private var lastWordAdded: String = ""
+    private var highlightedIndexs: [Int] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
         let layout = UICollectionViewFlowLayout()
         
         let highlightView = HighlightCollectionView(frame: view.frame, collectionViewLayout: layout)
+        self.randomNumber()
         validDelegate = highlightView
         highlightView.swipeDelegate = self
         collectionView = highlightView
@@ -86,9 +88,12 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         let str: String = self.word.joined()
         if (GameModel.checkValidWord(str)) {
             self.validDelegate?.validWord(true)
+            self.wordCells.sort(by: {$0.row! < $1.row!})
             for i in wordCells {
-                GameModel.removeLetter(row: i.row!, column: i.column!)
-                //i.letterLabel.text = "_"
+                // NEED TO SORT BY ROW
+                print("row: \(i.row!) col: \(i.column!)")
+                GameModel.removeLetter(row: i.row!, column: i.column!,
+                                       isHighlighted: i.highlightedLetter)
             }
         }
         else {
@@ -108,6 +113,18 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         collectionView?.reloadData()
     }
     
+    private func randomNumber(){
+        var previousNumber: UInt32 = 0
+        var randomNumber: UInt32 = 0
+        for _ in 0...3 {
+            randomNumber = arc4random_uniform(UInt32(GameModel.getLetterCount()))
+            if (randomNumber != previousNumber) {
+                self.highlightedIndexs.append(Int(randomNumber))
+            }
+            previousNumber = randomNumber
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView,
                                  numberOfItemsInSection section: Int) -> Int {
         return GameModel.getLetterCount()
@@ -122,6 +139,11 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
     override func collectionView(_ collectionView: UICollectionView,
                                  cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let letterCell = collectionView.dequeueReusableCell(withReuseIdentifier: "letterCell", for: indexPath) as! LetterCell
+        
+        if (highlightedIndexs.contains(indexPath.row)) {
+            letterCell.highlightedLetter = true
+            letterCell.letterLabel.textColor = UIColor.yellow
+        }
         letterCell.column = indexPath.row % 9
         letterCell.row = (indexPath.row - letterCell.column!) / 9
         letterCell.letterLabel.text = GameModel.get(at: indexPath.row).rawValue
@@ -134,8 +156,15 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
     }
     
     @objc func newGame() {
+        for i in highlightedIndexs {
+            let indexP = IndexPath(row: i, section: 0)
+            let letterCell = collectionView?.cellForItem(at: indexP) as! LetterCell
+            letterCell.letterLabel.textColor = UIColor.black
+            letterCell.highlightedLetter = false
+        }
+        self.highlightedIndexs.removeAll()
+        self.randomNumber()
         GameModel.buildBoard()
-        //GameModel.checkWordsSelected()
         collectionView?.reloadData()
     }
 
@@ -148,7 +177,6 @@ class HighlightCollectionView: UICollectionView, ValidWordDelegate{
     private var lines: [CGPoint] = []
     
     var lineColor: CGColor = UIColor.yellow.cgColor
-    private var score = "0"
     
     override init(frame: CGRect, collectionViewLayout layout: UICollectionViewLayout) {
         super.init(frame: frame, collectionViewLayout: layout)
@@ -211,6 +239,8 @@ class HighlightCollectionView: UICollectionView, ValidWordDelegate{
         let lowerBounds = 14 * bounds.height / 16.0
         let scoreString: NSString = NSString(string: "Score:")
         scoreString.draw(at: CGPoint(x: bounds.width / 10.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
+
+        let score: NSString = NSString(string: "\(GameModel.score)")
         score.draw(at: CGPoint(x: bounds.width / 3.0 , y: lowerBounds - bounds.height / 26.0), withAttributes: [:])
         context.strokePath()
         
@@ -234,6 +264,7 @@ class LetterCell: UICollectionViewCell {
     var row: Int?
     var column: Int?
     var charPreviouslyAdded: Bool = false
+    var highlightedLetter: Bool = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -248,7 +279,7 @@ class LetterCell: UICollectionViewCell {
     let letterLabel: UILabel = {
         let letterLabel = UILabel()
         letterLabel.text = "A"
-        letterLabel.font = letterLabel.font.withSize(18)
+        letterLabel.font = UIFont(name: "HelveticaNeue", size: 18)
         letterLabel.textColor = UIColor.black
         letterLabel.adjustsFontSizeToFitWidth = true;
         letterLabel.translatesAutoresizingMaskIntoConstraints = false
