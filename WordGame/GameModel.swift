@@ -202,6 +202,10 @@ class GameModel {
                 board.append(Letters(rawValue: "\(i)")!)
             }
         }
+        
+        for i in 0...9 {
+            board.append(Letters.B)
+        }
          
         /*
         for i in 0...107 {

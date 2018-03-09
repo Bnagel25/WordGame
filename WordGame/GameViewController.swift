@@ -103,6 +103,7 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         // Check Word accuracy, delete and then reset
         let str: String = self.word.joined()
         if (GameModel.checkValidWord(str)) {
+            
             self.validDelegate?.validWord(true)
             // Sort by row (needed for removal)
             self.wordCells.sort(by: {$0.row! < $1.row!})
@@ -165,7 +166,7 @@ UICollectionViewDelegateFlowLayout, SwipeDelegate {
         //TODO: Probably have to move this to the controller. 
         if (highlightedIndexs.contains(indexPath.row)) {
             letterCell.highlightedLetter = true
-            letterCell.letterLabel.textColor = UIColor.yellow
+            letterCell.letterLabel.textColor = UIColor(red:1.00, green:0.87, blue:0.15, alpha:1.0)
         }
         
         letterCell.column = indexPath.row % 9

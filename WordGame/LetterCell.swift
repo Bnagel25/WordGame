@@ -33,7 +33,7 @@ class LetterCell: UICollectionViewCell {
         let letterLabel = UILabel()
         letterLabel.text = "A"
         letterLabel.font = UIFont(name: "HelveticaNeue", size: 18)
-        letterLabel.textColor = UIColor.black
+        letterLabel.textColor = UIColor(red:0.16, green:0.24, blue:0.34, alpha:1.0)
         letterLabel.adjustsFontSizeToFitWidth = true;
         letterLabel.translatesAutoresizingMaskIntoConstraints = false
         return letterLabel
@@ -43,7 +43,7 @@ class LetterCell: UICollectionViewCell {
         let scoreLabel = UILabel()
         scoreLabel.text = "0"
         scoreLabel.font = UIFont(name: "HelveticaNeue", size: 8)
-        scoreLabel.textColor = UIColor.black
+        scoreLabel.textColor = UIColor(red:0.16, green:0.24, blue:0.34, alpha:1.0)
         scoreLabel.adjustsFontSizeToFitWidth = true;
         scoreLabel.translatesAutoresizingMaskIntoConstraints = false
         return scoreLabel
